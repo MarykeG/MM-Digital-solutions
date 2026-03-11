@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Velvet Salon – Beauty Redefined</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --plum: #2d1040;
+    --plum-mid: #3d1555;
+    --plum-light: #5a2080;
+    --lavender: #c9a0dc;
+    --lav-light: #e8d5f5;
+    --lav-pale: #f5eeff;
+    --cream: #fdf8ff;
+    --dark: #1a0a28;
+    --text: #3a2050;
+    --text-light: #7a5a90;
+    --white: #ffffff;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── GRAIN OVERLAY ── */
+  body::after {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:9000;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top:0; width:100%; z-index:500;
+    padding: 0 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 72px;
+    background: rgba(253,248,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(201,160,220,0.15);
+    transition: box-shadow 0.3s;
+  }
+  nav.scrolled { box-shadow: 0 4px 30px rgba(45,16,64,0.08); }
+
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; letter-spacing: 0.08em;
+    color: var(--plum);
+  }
+  .nav-logo span { color: var(--lavender); font-style: italic; }
+
+  .nav-links { display:flex; gap:36px; list-style:none; }
+  .nav-links a {
+    font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-light); text-decoration: none;
+    transition: color 0.3s;
+  }
+  .nav-links a:hover { color: var(--plum); }
+
+  .nav-cta {
+    background: var(--plum); color: var(--lav-light);
+    padding: 10px 28px; font-size: 0.72rem; letter-spacing: 0.2em;
+    text-transform: uppercase; text-decoration: none;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .nav-cta:hover { background: var(--plum-light); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 72px 0 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .hero-left {
+    padding: 80px 60px 80px 80px;
+    position: relative; z-index: 2;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--lav-pale); border: 1px solid rgba(201,160,220,0.4);
+    padding: 6px 16px; margin-bottom: 32px;
+    font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--plum-light);
+    animation: fadeUp 0.8s ease forwards;
+  }
+  .hero-badge::before { content:'✦'; font-size:0.5rem; color: var(--lavender); }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    font-weight: 400; line-height: 1.1;
+    color: var(--plum);
+    margin-bottom: 24px;
+    opacity: 0; animation: fadeUp 0.9s ease 0.1s forwards;
+  }
+  .hero-title em { font-style: italic; color: var(--plum-light); }
+
+  .hero-sub {
+    font-size: 1rem; line-height: 1.8; color: var(--text-light);
+    max-width: 420px; margin-bottom: 44px;
+    opacity: 0; animation: fadeUp 0.9s ease 0.2s forwards;
+  }
+
+  .hero-actions {
+    display: flex; gap: 16px; align-items: center;
+    opacity: 0; animation: fadeUp 0.9s ease 0.3s forwards;
+  }
+
+  .btn-primary {
+    background: var(--plum); color: var(--lav-light);
+    padding: 15px 36px; font-size: 0.75rem; letter-spacing: 0.2em;
+    text-transform: uppercase; text-decoration: none;
+    transition: all 0.3s; display: inline-block;
+  }
+  .btn-primary:hover { background: var(--plum-light); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(45,16,64,0.25); }
+
+  .btn-outline {
+    border: 1px solid rgba(201,160,220,0.6); color: var(--plum);
+    padding: 15px 36px; font-size: 0.75rem; letter-spacing: 0.2em;
+    text-transform: uppercase; text-decoration: none;
+    transition: all 0.3s; display: inline-block;
+  }
+  .btn-outline:hover { background: var(--lav-pale); border-color: var(--lavender); }
+
+  .hero-stats {
+    display: flex; gap: 36px; margin-top: 56px; padding-top: 36px;
+    border-top: 1px solid rgba(201,160,220,0.2);
+    opacity: 0; animation: fadeUp 0.9s ease 0.4s forwards;
+  }
+  .hero-stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; color: var(--plum); line-height: 1;
+  }
+  .hero-stat-label { font-size: 0.68rem; color: var(--text-light); letter-spacing: 0.1em; margin-top: 4px; }
+
+  .hero-right {
+    height: 100vh; position: relative; overflow: hidden;
+    background: linear-gradient(160deg, var(--plum-mid), var(--dark), #4d1a6e);
+    opacity: 0; animation: fadeIn 1.2s ease 0.2s forwards;
+  }
+
+  /* abstract decorative shapes */
+  .hero-shape1 {
+    position: absolute; top: -80px; right: -80px;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(201,160,220,0.15), transparent 70%);
+  }
+  .hero-shape2 {
+    position: absolute; bottom: 100px; left: -60px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(90,32,128,0.4), transparent 70%);
+  }
+
+  .hero-img-content {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    justify-content: flex-end; padding: 50px 50px;
+    background: linear-gradient(to top, rgba(29,10,40,0.85) 0%, transparent 50%);
+  }
+
+  /* Floating service bubbles */
+  .float-card {
+    position: absolute; background: rgba(253,248,255,0.1);
+    backdrop-filter: blur(10px); border: 1px solid rgba(201,160,220,0.2);
+    padding: 14px 20px;
+    animation: floatUp 3s ease-in-out infinite;
+  }
+  .float-card:nth-child(1) { top: 18%; right: 10%; animation-delay: 0s; }
+  .float-card:nth-child(2) { top: 42%; left: 8%; animation-delay: 1s; }
+  .float-card:nth-child(3) { bottom: 28%; right: 12%; animation-delay: 2s; }
+
+  @keyframes floatUp {
+    0%,100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .float-card-name { font-size: 0.65rem; color: var(--lav-light); letter-spacing: 0.15em; text-transform: uppercase; }
+  .float-card-price { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--lavender); margin-top: 3px; }
+
+  .hero-img-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem; font-weight: 400; color: var(--lav-light);
+    margin-bottom: 8px;
+  }
+  .hero-img-text p { font-size: 0.78rem; color: rgba(232,213,245,0.6); letter-spacing: 0.1em; }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 100px 80px; }
+  .section-eyebrow {
+    font-size: 0.62rem; letter-spacing: 0.5em; text-transform: uppercase;
+    color: var(--lavender); margin-bottom: 12px;
+  }
+  .section-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.8rem); font-weight: 400;
+    color: var(--plum); margin-bottom: 16px; line-height: 1.2;
+  }
+  .section-sub {
+    font-size: 0.9rem; color: var(--text-light); line-height: 1.8;
+    max-width: 500px;
+  }
+  .divider { width: 40px; height: 1px; background: var(--lavender); margin: 24px 0; }
+
+  /* REVEAL */
+  .reveal { opacity:0; transform:translateY(36px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  /* ── SERVICES ── */
+  #services { background: var(--white); }
+  .services-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; margin-bottom: 70px; }
+  .services-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 2px;
+  }
+  .service-item {
+    background: var(--lav-pale); padding: 40px 32px;
+    position: relative; overflow: hidden;
+    transition: transform 0.4s ease, background 0.4s ease;
+    cursor: default;
+  }
+  .service-item::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(to right, var(--lavender), var(--plum-light));
+    transform: scaleX(0); transition: transform 0.4s ease;
+  }
+  .service-item:hover { background: var(--plum); transform: translateY(-4px); }
+  .service-item:hover::after { transform: scaleX(1); }
+  .service-item:hover .si-name, .service-item:hover .si-desc { color: var(--lav-light); }
+  .service-item:hover .si-price { color: var(--lavender); }
+  .service-item:hover .si-icon { color: var(--lavender); }
+
+  .si-icon { font-size: 1.4rem; margin-bottom: 20px; display: block; color: var(--plum-light); transition: color 0.4s; }
+  .si-name { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--plum); margin-bottom: 10px; transition: color 0.4s; }
+  .si-desc { font-size: 0.76rem; color: var(--text-light); line-height: 1.8; margin-bottom: 20px; transition: color 0.4s; }
+  .si-price { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--plum-light); border-top: 1px solid rgba(201,160,220,0.3); padding-top: 16px; font-weight: 500; transition: color 0.4s; }
+  .si-price strong { font-family: 'Playfair Display', serif; font-size: 1.3rem; display: block; font-weight: 400; margin-bottom: 2px; }
+
+  /* ── GALLERY ── */
+  #gallery { background: var(--cream); padding: 100px 80px; }
+  .gallery-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px; }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 280px 280px;
+    gap: 4px;
+  }
+  .gallery-cell {
+    overflow: hidden; position: relative;
+    transition: transform 0.4s ease;
+  }
+  .gallery-cell:hover { z-index: 2; }
+  .gallery-cell:hover .gallery-inner { transform: scale(1.05); }
+  .gallery-cell:nth-child(1) { grid-row: 1 / 3; }
+
+  .gallery-inner {
+    width: 100%; height: 100%;
+    transition: transform 0.6s ease;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+
+  /* Placeholder gradient "photos" */
+  .gallery-inner.g1 { background: linear-gradient(135deg, #3d1555, #6b2d9e, #2d1040); }
+  .gallery-inner.g2 { background: linear-gradient(160deg, #5a1a7a, #3d0d55, #7a3aaa); }
+  .gallery-inner.g3 { background: linear-gradient(135deg, #2d0d40, #4d1a6e, #1a0828); }
+  .gallery-inner.g4 { background: linear-gradient(160deg, #4a1570, #6d2d9a, #2a0a3e); }
+  .gallery-inner.g5 { background: linear-gradient(135deg, #3a1060, #5a2080, #200838); }
+
+  .gallery-label {
+    position: absolute; bottom: 16px; left: 16px;
+    background: rgba(29,10,40,0.75); backdrop-filter: blur(6px);
+    padding: 6px 14px;
+    font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--lav-light);
+  }
+
+  /* decorative text inside gallery cells */
+  .gallery-deco {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.2rem, 3vw, 2rem); color: rgba(232,213,245,0.15);
+    letter-spacing: 0.1em; text-align: center; padding: 20px; font-style: italic;
+    pointer-events: none;
+  }
+
+  /* ── BOOKING ── */
+  #booking {
+    background: var(--plum);
+    padding: 100px 80px;
+    position: relative; overflow: hidden;
+  }
+  #booking::before {
+    content: ''; position: absolute; top: -100px; right: -100px;
+    width: 500px; height: 500px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(201,160,220,0.08), transparent 70%);
+    pointer-events: none;
+  }
+
+  .booking-layout { display: grid; grid-template-columns: 1fr 1.3fr; gap: 80px; align-items: start; position: relative; z-index: 1; }
+
+  .booking-info .section-eyebrow { color: var(--lavender); }
+  .booking-info .section-heading { color: var(--lav-light); }
+  .booking-info .section-sub { color: rgba(232,213,245,0.6); }
+  .booking-info .divider { background: rgba(201,160,220,0.4); }
+
+  .booking-perks { margin-top: 40px; display: flex; flex-direction: column; gap: 18px; }
+  .perk { display: flex; align-items: center; gap: 14px; }
+  .perk-icon { width: 36px; height: 36px; border: 1px solid rgba(201,160,220,0.3); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; color: var(--lavender); }
+  .perk-text { font-size: 0.8rem; color: rgba(232,213,245,0.65); line-height: 1.6; }
+  .perk-text strong { color: var(--lav-light); display: block; font-size: 0.85rem; margin-bottom: 2px; }
+
+  /* Booking Form */
+  .booking-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group label {
+    display: block; font-size: 0.6rem; letter-spacing: 0.35em; text-transform: uppercase;
+    color: rgba(201,160,220,0.7); margin-bottom: 8px;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(201,160,220,0.2);
+    color: var(--lav-light); padding: 13px 16px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.8rem;
+    outline: none; transition: border-color 0.3s, background 0.3s;
+    appearance: none; border-radius: 0;
+  }
+  .form-group select option { background: var(--plum); }
+  .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(201,160,220,0.3); }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--lavender); background: rgba(255,255,255,0.08);
+  }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+
+  .btn-book {
+    background: var(--lavender); color: var(--plum);
+    padding: 15px; font-size: 0.72rem; letter-spacing: 0.25em;
+    text-transform: uppercase; border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; font-weight: 500;
+    transition: all 0.3s;
+  }
+  .btn-book:hover { background: var(--lav-light); transform: translateY(-2px); }
+
+  .book-success { display: none; text-align: center; padding: 50px 20px; }
+  .book-success-icon { font-size: 2rem; color: var(--lavender); margin-bottom: 16px; display: block; }
+  .book-success h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--lav-light); margin-bottom: 10px; }
+  .book-success p { font-size: 0.8rem; color: rgba(232,213,245,0.55); line-height: 1.8; }
+
+  /* ── TEAM ── */
+  #team { background: var(--white); padding: 100px 80px; }
+  .team-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 30px; margin-top: 60px; }
+  .team-card { text-align: center; }
+  .team-photo {
+    width: 100%; aspect-ratio: 3/4; margin-bottom: 24px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .team-photo-inner {
+    width: 100%; height: 100%;
+    transition: transform 0.5s ease;
+  }
+  .team-card:hover .team-photo-inner { transform: scale(1.04); }
+  .tp1 { background: linear-gradient(160deg,#4a1570,#6d2d9a,#2d1040); }
+  .tp2 { background: linear-gradient(160deg,#3d1060,#5a2080,#1a0828); }
+  .tp3 { background: linear-gradient(160deg,#5c1a80,#3a0d55,#7a3aaa); }
+  .team-photo-deco {
+    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+    font-family: 'Playfair Display', serif; font-size: 3rem; font-style: italic;
+    color: rgba(232,213,245,0.12); white-space: nowrap; pointer-events: none;
+  }
+  .team-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--plum); margin-bottom: 5px; }
+  .team-role { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--lavender); margin-bottom: 12px; }
+  .team-bio { font-size: 0.76rem; color: var(--text-light); line-height: 1.8; }
+
+  /* ── TESTIMONIALS ── */
+  #reviews { background: var(--lav-pale); padding: 100px 80px; }
+  .reviews-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-top: 60px; }
+  .review-card {
+    background: var(--white); padding: 36px;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  }
+  .review-card:hover { border-color: var(--lavender); transform: translateY(-4px); box-shadow: 0 16px 40px rgba(45,16,64,0.08); }
+  .review-stars { color: var(--lavender); font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 16px; }
+  .review-text { font-family: 'Playfair Display', serif; font-size: 0.95rem; font-style: italic; color: var(--plum); line-height: 1.8; margin-bottom: 24px; }
+  .review-author { display: flex; align-items: center; gap: 12px; }
+  .review-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,var(--plum-mid),var(--plum-light)); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; color: var(--lavender); font-size: 0.85rem; }
+  .review-name { font-size: 0.78rem; color: var(--plum); font-weight: 500; }
+  .review-date { font-size: 0.65rem; color: var(--text-light); }
+
+  /* ── CONTACT BAR ── */
+  #contact-bar {
+    background: var(--dark); padding: 70px 80px;
+    display: flex; align-items: center; justify-content: space-between; gap: 40px;
+  }
+  .contact-bar-text h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--lav-light); margin-bottom: 8px; }
+  .contact-bar-text p { font-size: 0.8rem; color: rgba(232,213,245,0.5); }
+  .contact-bar-details { display: flex; gap: 50px; }
+  .cbd-item label { font-size: 0.58rem; letter-spacing: 0.35em; text-transform: uppercase; color: rgba(201,160,220,0.5); display: block; margin-bottom: 6px; }
+  .cbd-item a, .cbd-item span { font-size: 0.9rem; color: var(--lav-light); text-decoration: none; }
+  .cbd-item a:hover { color: var(--lavender); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--plum); padding: 28px 80px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid rgba(201,160,220,0.1);
+  }
+  footer p { font-size: 0.65rem; color: rgba(201,160,220,0.4); letter-spacing: 0.15em; }
+  .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--lavender); font-style: italic; }
+  .footer-credit { font-size: 0.6rem; color: rgba(201,160,220,0.3); letter-spacing: 0.1em; }
+  .footer-credit a { color: rgba(201,160,220,0.5); text-decoration: none; }
+  .footer-credit a:hover { color: var(--lavender); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 900px) {
+    nav { padding: 0 24px; }
+    .nav-links { display: none; }
+    section { padding: 70px 28px; }
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 40px 28px; }
+    .hero-right { height: 60vw; }
+    .services-intro { grid-template-columns: 1fr; gap: 30px; }
+    .services-grid { grid-template-columns: 1fr 1fr; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .gallery-cell:nth-child(1) { grid-row: auto; }
+    .booking-layout { grid-template-columns: 1fr; gap: 50px; }
+    .team-grid { grid-template-columns: 1fr 1fr; }
+    .reviews-grid { grid-template-columns: 1fr; }
+    #contact-bar { flex-direction: column; text-align: center; padding: 50px 28px; }
+    .contact-bar-details { flex-direction: column; gap: 20px; align-items: center; }
+    footer { flex-direction: column; gap: 8px; text-align: center; padding: 24px 28px; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .services-grid { grid-template-columns: 1fr; }
+    .team-grid { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: 1fr; }
+    .hero-stats { flex-wrap: wrap; gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-logo">Velvet <span>Salon</span></div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#team">Our Team</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+    <li><a href="#booking">Contact</a></li>
+  </ul>
+  <a href="#booking" class="nav-cta">Book Now</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-badge">Cape Town's Premier Salon</div>
+    <h1 class="hero-title">Beauty<br><em>Redefined</em></h1>
+    <p class="hero-sub">Luxury hair and beauty treatments tailored to you. From precision cuts to transformative colour — your glow-up starts here.</p>
+    <div class="hero-actions">
+      <a href="#booking" class="btn-primary">Book Appointment</a>
+      <a href="#services" class="btn-outline">View Services</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">8+</div>
+        <div class="hero-stat-label">Years Open</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">2 400+</div>
+        <div class="hero-stat-label">Happy Clients</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">12</div>
+        <div class="hero-stat-label">Expert Stylists</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-shape1"></div>
+    <div class="hero-shape2"></div>
+    <!-- Floating service cards -->
+    <div class="float-card">
+      <div class="float-card-name">Balayage</div>
+      <div class="float-card-price">From R 850</div>
+    </div>
+    <div class="float-card">
+      <div class="float-card-name">Keratin Treatment</div>
+      <div class="float-card-price">From R 1 200</div>
+    </div>
+    <div class="float-card">
+      <div class="float-card-name">Bridal Package</div>
+      <div class="float-card-price">From R 2 500</div>
+    </div>
+    <div class="hero-img-content">
+      <div class="hero-img-text">
+        <h2>Your Crown Awaits</h2>
+        <p>Walk in. Glow out.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="services-intro">
+    <div class="reveal">
+      <div class="section-eyebrow">What We Do</div>
+      <h2 class="section-heading">Expert Services<br>for Every Look</h2>
+      <div class="divider"></div>
+      <p class="section-sub">From everyday styling to full transformations, our skilled team delivers results that turn heads and build confidence.</p>
+    </div>
+    <div class="reveal" style="transition-delay:.1s">
+      <p style="font-size:.85rem;color:var(--text-light);line-height:1.9">We believe every client deserves a personalised experience. During your visit, your stylist will consult with you to understand your hair type, lifestyle, and goals before recommending the perfect treatment.</p>
+      <br>
+      <a href="#booking" class="btn-primary" style="font-size:.68rem">Book a Consultation</a>
+    </div>
+  </div>
+  <div class="services-grid">
+    <div class="service-item reveal">
+      <span class="si-icon">✂</span>
+      <div class="si-name">Cut &amp; Style</div>
+      <p class="si-desc">Precision cuts tailored to your face shape, lifestyle, and hair texture. Includes wash, cut and blow-dry.</p>
+      <div class="si-price"><strong>From R 280</strong>Ladies · Gents from R 120</div>
+    </div>
+    <div class="service-item reveal" style="transition-delay:.08s">
+      <span class="si-icon">◈</span>
+      <div class="si-name">Colour &amp; Balayage</div>
+      <p class="si-desc">Full colour, highlights, balayage, ombre and toning services using premium, ammonia-free products.</p>
+      <div class="si-price"><strong>From R 650</strong>Balayage from R 850</div>
+    </div>
+    <div class="service-item reveal" style="transition-delay:.16s">
+      <span class="si-icon">✦</span>
+      <div class="si-name">Keratin &amp; Relaxers</div>
+      <p class="si-desc">Smooth, frizz-free results that last for months. Safe, nourishing formulas for all hair types.</p>
+      <div class="si-price"><strong>From R 1 200</strong>Lasts 3–6 months</div>
+    </div>
+    <div class="service-item reveal" style="transition-delay:.24s">
+      <span class="si-icon">◉</span>
+      <div class="si-name">Bridal &amp; Events</div>
+      <p class="si-desc">Full bridal hair and makeup packages including trial run, day-of styling and touch-up kit.</p>
+      <div class="si-price"><strong>From R 2 500</strong>Full package · Trial included</div>
+    </div>
+    <div class="service-item reveal" style="transition-delay:.32s">
+      <span class="si-icon">◐</span>
+      <div class="si-name">Hair Treatments</div>
+      <p class="si-desc">Intensive conditioning, scalp treatments and bond-repair therapies to restore damaged hair.</p>
+      <div class="si-price"><strong>From R 350</strong>30–60 minute treatments</div>
+    </div>
+    <div class="service-item reveal" style="transition-delay:.4s">
+      <span class="si-icon">❋</span>
+      <div class="si-name">Nails &amp; Beauty</div>
+      <p class="si-desc">Gel manicures, pedicures, eyebrow shaping, tinting and lash lifts by our certified beauty team.</p>
+      <div class="si-price"><strong>From R 180</strong>Gel nails from R 320</div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" style="padding:100px 80px">
+  <div class="gallery-header reveal">
+    <div>
+      <div class="section-eyebrow">Our Work</div>
+      <h2 class="section-heading">Transformations<br>&amp; Looks We Love</h2>
+    </div>
+    <a href="#booking" class="btn-outline">Book Your Look</a>
+  </div>
+  <div class="gallery-grid reveal">
+    <div class="gallery-cell">
+      <div class="gallery-inner g1">
+        <div class="gallery-deco">Colour &amp; Tone</div>
+      </div>
+      <div class="gallery-label">Balayage</div>
+    </div>
+    <div class="gallery-cell">
+      <div class="gallery-inner g2">
+        <div class="gallery-deco">Cut</div>
+      </div>
+      <div class="gallery-label">Precision Cut</div>
+    </div>
+    <div class="gallery-cell">
+      <div class="gallery-inner g3">
+        <div class="gallery-deco">Bridal</div>
+      </div>
+      <div class="gallery-label">Bridal Updo</div>
+    </div>
+    <div class="gallery-cell">
+      <div class="gallery-inner g4">
+        <div class="gallery-deco">Nails</div>
+      </div>
+      <div class="gallery-label">Gel Manicure</div>
+    </div>
+    <div class="gallery-cell">
+      <div class="gallery-inner g5">
+        <div class="gallery-deco">Keratin</div>
+      </div>
+      <div class="gallery-label">Keratin Treatment</div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="reveal" style="text-align:center;max-width:600px;margin:0 auto 10px">
+    <div class="section-eyebrow">The Team</div>
+    <h2 class="section-heading">Meet Your Stylists</h2>
+    <div class="divider" style="margin:20px auto"></div>
+    <p class="section-sub" style="margin:0 auto">Our passionate team of certified stylists bring years of experience and ongoing training to every appointment.</p>
+  </div>
+  <div class="team-grid">
+    <div class="team-card reveal">
+      <div class="team-photo">
+        <div class="team-photo-inner tp1"></div>
+        <div class="team-photo-deco">Naledi</div>
+      </div>
+      <div class="team-name">Naledi Dlamini</div>
+      <div class="team-role">Senior Colourist · 9 Years</div>
+      <p class="team-bio">Specialising in balayage, ombre and creative colour. Naledi's passion is helping clients find their perfect shade.</p>
+    </div>
+    <div class="team-card reveal" style="transition-delay:.12s">
+      <div class="team-photo">
+        <div class="team-photo-inner tp2"></div>
+        <div class="team-photo-deco">Zanele</div>
+      </div>
+      <div class="team-name">Zanele Mokoena</div>
+      <div class="team-role">Master Stylist · 12 Years</div>
+      <p class="team-bio">A precision cut expert with a background in international fashion week styling. Zanele brings editorial flair to every cut.</p>
+    </div>
+    <div class="team-card reveal" style="transition-delay:.24s">
+      <div class="team-photo">
+        <div class="team-photo-inner tp3"></div>
+        <div class="team-photo-deco">Lindiwe</div>
+      </div>
+      <div class="team-name">Lindiwe Khumalo</div>
+      <div class="team-role">Beauty Therapist · 6 Years</div>
+      <p class="team-bio">Certified in nail artistry, lash lifts and skincare. Lindiwe ensures every beauty treatment leaves you glowing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="reveal" style="text-align:center;max-width:600px;margin:0 auto">
+    <div class="section-eyebrow">Client Love</div>
+    <h2 class="section-heading">What Our Clients Say</h2>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card reveal">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Naledi did my balayage and I am absolutely obsessed. The colour is exactly what I wanted — so natural and beautifully blended."</p>
+      <div class="review-author">
+        <div class="review-avatar">T</div>
+        <div><div class="review-name">Thandeka M.</div><div class="review-date">February 2026</div></div>
+      </div>
+    </div>
+    <div class="review-card reveal" style="transition-delay:.1s">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"Zanele is honestly the best stylist I've ever had. She really listened to what I wanted and delivered beyond my expectations."</p>
+      <div class="review-author">
+        <div class="review-avatar">A</div>
+        <div><div class="review-name">Ayesha K.</div><div class="review-date">January 2026</div></div>
+      </div>
+    </div>
+    <div class="review-card reveal" style="transition-delay:.2s">
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"I got the bridal package and it was flawless. The team made me feel so calm and beautiful on my wedding day. Worth every cent!"</p>
+      <div class="review-author">
+        <div class="review-avatar">S</div>
+        <div><div class="review-name">Simone R.</div><div class="review-date">December 2025</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING -->
+<section id="booking" style="padding:0">
+  <div class="booking-layout" style="padding:100px 80px;background:var(--plum);position:relative;overflow:hidden">
+    <div style="content:'';position:absolute;top:-100px;right:-100px;width:500px;height:500px;border-radius:50%;background:radial-gradient(ellipse,rgba(201,160,220,0.06),transparent 70%);pointer-events:none"></div>
+
+    <div class="booking-info reveal">
+      <div class="section-eyebrow" style="color:var(--lavender)">Appointments</div>
+      <h2 class="section-heading" style="color:var(--lav-light)">Book Your<br>Experience</h2>
+      <div class="divider" style="background:rgba(201,160,220,0.35)"></div>
+      <p class="section-sub" style="color:rgba(232,213,245,0.55)">Fill in the form and we'll confirm your appointment within a few hours. Same-day bookings? Give us a call.</p>
+      <div class="booking-perks">
+        <div class="perk">
+          <div class="perk-icon">✦</div>
+          <div class="perk-text"><strong>Free Consultation</strong>Every appointment starts with a personalised hair consultation.</div>
+        </div>
+        <div class="perk">
+          <div class="perk-icon">◈</div>
+          <div class="perk-text"><strong>Flexible Hours</strong>Open Monday to Saturday, 08:00 – 18:00. Sundays by appointment.</div>
+        </div>
+        <div class="perk">
+          <div class="perk-icon">◉</div>
+          <div class="perk-text"><strong>Easy Cancellation</strong>Cancel or reschedule up to 24 hours before your booking, no charge.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal" style="transition-delay:.1s">
+      <div class="booking-form" id="bookingForm">
+        <div class="form-row">
+          <div class="form-group"><label>Full Name</label><input type="text" id="bname" placeholder="Your name"></div>
+          <div class="form-group"><label>Phone / WhatsApp</label><input type="tel" id="bphone" placeholder="e.g. 083 123 4567"></div>
+        </div>
+        <div class="form-group"><label>Service</label>
+          <select id="bservice">
+            <option value="" disabled selected>Choose a service...</option>
+            <option>Cut &amp; Style – From R 280</option>
+            <option>Colour &amp; Balayage – From R 650</option>
+            <option>Keratin Treatment – From R 1 200</option>
+            <option>Bridal Package – From R 2 500</option>
+            <option>Hair Treatment – From R 350</option>
+            <option>Nails &amp; Beauty – From R 180</option>
+            <option>Not sure – book a consultation</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Preferred Date</label><input type="date" id="bdate"></div>
+          <div class="form-group"><label>Preferred Time</label>
+            <select id="btime">
+              <option value="" disabled selected>Select time...</option>
+              <option>08:00</option><option>09:00</option><option>10:00</option>
+              <option>11:00</option><option>12:00</option><option>13:00</option>
+              <option>14:00</option><option>15:00</option><option>16:00</option>
+              <option>17:00</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label>Any Special Requests?</label><textarea id="bnotes" placeholder="Tell us anything helpful — hair history, inspiration, allergies..."></textarea></div>
+        <button class="btn-book" onclick="submitBooking()">Confirm Booking Request</button>
+      </div>
+      <div class="book-success" id="bookSuccess">
+        <span class="book-success-icon">✦</span>
+        <h3>Booking Received!</h3>
+        <p>Thank you! We'll WhatsApp or call you within a few hours to confirm your appointment. We can't wait to see you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT BAR -->
+<div id="contact-bar">
+  <div class="contact-bar-text reveal">
+    <h3>Visit Velvet Salon</h3>
+    <p>Walk-ins welcome when available — booking recommended</p>
+  </div>
+  <div class="contact-bar-details reveal" style="transition-delay:.1s">
+    <div class="cbd-item">
+      <label>Phone / WhatsApp</label>
+      <a href="tel:0213456789">021 345 6789</a>
+    </div>
+    <div class="cbd-item">
+      <label>Address</label>
+      <span>12 Kloof Street, Gardens<br>Cape Town, 8001</span>
+    </div>
+    <div class="cbd-item">
+      <label>Hours</label>
+      <span>Mon–Sat 08:00–18:00<br>Sun by appointment</span>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Velvet Salon. All rights reserved.</p>
+  <div class="footer-logo">Velvet Salon</div>
+  <p class="footer-credit">Website by <a href="#">MM Digital Studio</a></p>
+</footer>
+
+<script>
+  // Nav scroll effect
+  window.addEventListener('scroll', () => {
+    document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(el => { if (el.isIntersecting) el.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Booking form
+  function submitBooking() {
+    const name = document.getElementById('bname').value;
+    const phone = document.getElementById('bphone').value;
+    const service = document.getElementById('bservice').value;
+    if (!name || !phone || !service) {
+      alert('Please fill in your name, phone number and select a service.');
+      return;
+    }
+    document.getElementById('bookingForm').style.display = 'none';
+    document.getElementById('bookSuccess').style.display = 'block';
+  }
+</script>
+</body>
+</html>
